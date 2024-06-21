@@ -1,0 +1,74 @@
+#define TRIG_PIN 9
+#define ECHO_PIN 8
+
+#define MOTOR_A_IN1 2
+#define MOTOR_A_IN2 3
+#define MOTOR_B_IN1 4
+#define MOTOR_B_IN2 5
+
+long duration;
+int distance;
+
+void setup() {
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  
+  pinMode(MOTOR_A_IN1, OUTPUT);
+  pinMode(MOTOR_A_IN2, OUTPUT);
+  pinMode(MOTOR_B_IN1, OUTPUT);
+  pinMode(MOTOR_B_IN2, OUTPUT);
+  
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Clear the trigPin
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  
+  // Sets the trigPin on HIGH state for 10 microseconds
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(ECHO_PIN, HIGH);
+  
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+  
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  
+  if(distance < 20) {
+    stopCar();
+    delay(500);
+    turnRight();
+    delay(300);
+  } else {
+    moveForward();
+  }
+  
+  delay(100);
+}
+
+void moveForward() {
+  digitalWrite(MOTOR_A_IN1, HIGH);
+  digitalWrite(MOTOR_A_IN2, LOW);
+  digitalWrite(MOTOR_B_IN1, HIGH);
+  digitalWrite(MOTOR_B_IN2, LOW);
+}
+
+void stopCar() {
+  digitalWrite(MOTOR_A_IN1, LOW);
+  digitalWrite(MOTOR_A_IN2, LOW);
+  digitalWrite(MOTOR_B_IN1, LOW);
+  digitalWrite(MOTOR_B_IN2, LOW);
+}
+
+void turnRight() {
+  digitalWrite(MOTOR_A_IN1, HIGH);
+  digitalWrite(MOTOR_A_IN2, LOW);
+  digitalWrite(MOTOR_B_IN1, LOW);
+  digitalWrite(MOTOR_B_IN2, HIGH);
+}
